@@ -107,6 +107,13 @@ instance.prototype.actions = function(system) {
 					default: '100',
 					regex: self.REGEX_NUMBER
 				}
+				,
+				{
+					type: 'textinput',
+					id: 'id_from',
+					label: 'Source address for socket. If not specified, packets will be sent out to the broadcast address of all IPv4 interfaces.',
+					default: 'null'
+				}
 			]
 		}
 	});
@@ -144,7 +151,8 @@ instance.prototype.action = function(action) {
 		var options = {
       'port':     action.options.id_port,
       'count':    action.options.id_count,
-      'interval': action.options.id_interval
+			'interval': action.options.id_interval,
+			'from':     action.options.id_from
 		};
 		wol(mac, options);
 	} else if (simple) {
