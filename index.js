@@ -111,8 +111,7 @@ instance.prototype.actions = function(system) {
 				{
 					type: 'textinput',
 					id: 'id_from',
-					label: 'Source address for socket. If not specified, packets will be sent out to the broadcast address of all IPv4 interfaces.',
-					default: 'null'
+					label: 'Source address for socket. If not specified, packets will be sent out to the broadcast address of all IPv4 interfaces.'
 				}
 			]
 		}
@@ -152,7 +151,7 @@ instance.prototype.action = function(action) {
       'port':     action.options.id_port,
       'count':    action.options.id_count,
 			'interval': action.options.id_interval,
-			'from':     action.options.id_from
+			'from':     action.options.if_from == '' ? null : action.options.if_from 
 		};
 		wol(mac, options);
 	} else if (simple) {
