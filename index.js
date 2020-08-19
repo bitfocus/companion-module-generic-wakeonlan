@@ -88,6 +88,13 @@ instance.prototype.actions = function(system) {
 				},
 				{
 					type: 'textinput',
+					id: 'id_address',
+					label: 'Destination IP:',
+					default: '255.255.255.255',
+					regex: self.REGEX_IP
+				},
+				{
+					type: 'textinput',
 					id: 'id_port',
 					label: 'UDP port:',
 					default: '9',
@@ -148,7 +155,8 @@ instance.prototype.action = function(action) {
 	
 	if (advanced) {
 		var options = {
-      'port':     action.options.id_port,
+			'port':     action.options.id_port,
+			'address':	action.options.id_address,
       'count':    action.options.id_count,
 			'interval': action.options.id_interval,
 			'from':     action.options.if_from == '' ? null : action.options.if_from 
