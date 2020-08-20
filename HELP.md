@@ -6,7 +6,7 @@ Broadcasts Wake-on-LAN magic packet from all network interfaces.
 
 - simple: broadcasts magic packet one time from all network interfaces on UDP port 9
 
-- advanced: you can specify the UDP port to be used, resend attempts and interval between them also from which IP and destination IP
+- advanced: you can specify the UDP port to be used, resend attempts and interval between them also destination IP
 
 **MAC address accepted formats**
 

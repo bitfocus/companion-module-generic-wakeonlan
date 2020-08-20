@@ -1,5 +1,5 @@
 var instance_skel = require('../../instance_skel');
-var wol           = require('wakeonlan');
+var wol           = require('wake_on_lan');
 var debug;
 var log;
 
@@ -114,12 +114,6 @@ instance.prototype.actions = function(system) {
 					default: '100',
 					regex: self.REGEX_NUMBER
 				}
-				,
-				{
-					type: 'textinput',
-					id: 'id_from',
-					label: 'Source address for socket. If not specified, packets will be sent out to the broadcast address of all IPv4 interfaces.'
-				}
 			]
 		}
 	});
@@ -157,17 +151,23 @@ instance.prototype.action = function(action) {
 		var options = {
 			'port':     action.options.id_port,
 			'address':	action.options.id_address,
-      'count':    action.options.id_count,
-			'interval': action.options.id_interval,
-			'from':     action.options.if_from == '' ? null : action.options.if_from 
+      'num_packets':    action.options.id_count,
+			'interval': action.options.id_interval
 		};
-		wol(mac, options);
+		wol.wake(mac, options, function(error) {
+			if (error) {
+				// handle error
+			} else {
+				// done sending packets
+				console.log('sended');
+			}
+		});
 	} else if (simple) {
 		var options = {
       'port':  9,
       'count': 1
 		};
-		wol(mac, options);
+		wol.wake(mac, options);
 	}
 }
 
