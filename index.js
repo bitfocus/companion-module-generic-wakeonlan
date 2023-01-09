@@ -1,175 +1,34 @@
-var instance_skel = require('../../instance_skel');
-var wol           = require('wake_on_lan');
-var debug;
-var log;
+import { InstanceBase, InstanceStatus, runEntrypoint } from '@companion-module/base'
+import { getActionDefinitions } from './actions.js'
 
-function instance(system, id, config) {
-	var self = this;
-
-	// super-constructor
-	instance_skel.apply(this, arguments);
-
-	self.actions(); // export actions
-	self.init_presets();
-
-	return self;
-}
-
-instance.prototype.updateConfig = function(config) {
-	var self = this;
-	self.init_presets();
-	self.config = config;
-};
-
-instance.prototype.init = function() {
-	var self = this;
-
-	debug = self.debug;
-	log = self.log;
-	self.init_presets();
-};
-
-// Return config fields for web config
-instance.prototype.config_fields = function () {
-	var self = this;
-
-	return [
-		{
-			type: 'text',
-			id: 'info',
-			label: 'Information',
-			width: 12,
-			value: 'Wake-on-LAN instance does not require any configuration'
-		}
-	]
-};
-
-// When module gets deleted
-instance.prototype.destroy = function() {
-	var self = this;
-
-	debug("destroy", self.id);;
-};
-
-
-instance.prototype.init_presets = function () {
-	var self = this;
-	var presets = [];
-
-	self.setPresetDefinitions(presets);
-}
-
-instance.prototype.actions = function(system) {
-	var self = this;
-	
-	self.setActions({
-
-		'send_simple': {
-			label: 'simple',
-			options: [
-				{
-					type: 'textinput',
-					id: 'id_broadcast_mac',
-					label: 'MAC address:',
-					default: '',
-					regex: '/^([0-9a-f]{2}([:.-]{0,1}|$)){6}$/i'
-				}
-			]
-		},
-		'send_advanced': {
-			label: 'advanced',
-			options: [
-				{
-					type: 'textinput',
-					id: 'id_advanced_mac',
-					label: 'MAC address:',
-					default: '',
-					regex: '/^([0-9a-f]{2}([:.-]{0,1}|$)){6}$/i'
-				},
-				{
-					type: 'textinput',
-					id: 'id_address',
-					label: 'Destination IP:',
-					default: '255.255.255.255',
-					regex: self.REGEX_IP
-				},
-				{
-					type: 'textinput',
-					id: 'id_port',
-					label: 'UDP port:',
-					default: '9',
-					regex: self.REGEX_PORT
-				},
-				{
-					type: 'textinput',
-					id: 'id_count',
-					label: 'Resend attempts:',
-					default: '3',
-					regex: self.REGEX_NUMBER
-				},
-				{
-					type: 'textinput',
-					id: 'id_interval',
-					label: 'Interval between packet resend (ms):',
-					default: '100',
-					regex: self.REGEX_NUMBER
-				}
-			]
-		}
-	});
-}
-
-instance.prototype.action = function(action) {
-	var self = this;
-	var mac;
-	var simple = false;
-	var advanced = false;
-	
-	var _regex_mac  = new RegExp(/^[0-9a-fA-F]{12}$/);
-
-	switch(action.action) {
-
-		case 'send_simple':
-			mac = action.options.id_broadcast_mac;
-			mac = mac.replace(/[:.-]/g, '');
-			if(_regex_mac.test(mac)) {
-				simple = true;
-			}
-			break;
-		
-		case 'send_advanced':
-			mac  = action.options.id_advanced_mac;
-			mac  = mac.replace(/[:.-]/g, '');
-			if(_regex_mac.test(mac)) {
-				advanced = true;
-			}
-			break;
-			
+class WOLInstance extends InstanceBase {
+	async init(config) {
+		await this.configUpdated(config)
 	}
-	
-	if (advanced) {
-		var options = {
-			'port':     action.options.id_port,
-			'address':	action.options.id_address,
-      'num_packets':    action.options.id_count,
-			'interval': action.options.id_interval
-		};
-		wol.wake(mac, options, function(error) {
-			if (error) {
-				// handle error
-			} else {
-				// done sending packets
-				console.log('sended');
-			}
-		});
-	} else if (simple) {
-		var options = {
-      'port':  9,
-      'count': 1
-		};
-		wol.wake(mac, options);
+
+	async configUpdated(config) {
+		this.config = config
+
+		this.setActionDefinitions(getActionDefinitions(this))
+
+		this.updateStatus(InstanceStatus.Ok)
+	}
+
+	// When module gets deleted
+	async destroy() {}
+
+	// Return config fields for web config
+	getConfigFields() {
+		return [
+			{
+				type: 'static-text',
+				id: 'info',
+				label: 'Information',
+				width: 12,
+				value: 'Wake-on-LAN instance does not require any configuration',
+			},
+		]
 	}
 }
 
-instance_skel.extendedBy(instance);
-exports = module.exports = instance;
+runEntrypoint(WOLInstance, [])

@@ -1,17 +1,8 @@
 {
 	"name": "generic-wakeonlan",
-	"version": "1.0.5",
-	"api_version": "1.0.0",
-	"description": "Wake-on-LAN",
-	"keywords": [
-		"Protocol",
-		"Generic"
-	],
-	"manufacturer": "Generic",
-	"product": "Wake-on-LAN",
-	"shortname": "Wake-on-LAN",
-	"homepage": "https://github.com/bitfocus/companion-module-generic-wakeonlan",
+	"version": "2.0.0",
 	"main": "index.js",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
@@ -19,12 +10,12 @@
 		"type": "git",
 		"url": "git+https://github.com/bitfocus/companion-module-generic-wakeonlan.git"
 	},
-	"author": "Alberto Righetto",
 	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/bitfocus/companion-module-generic-wakeonlan/issues"
-	},
 	"dependencies": {
+		"@companion-module/base": "~1.0.2",
 		"wake_on_lan": "^1.0.0"
+	},
+	"devDependencies": {
+		"@companion-module/tools": "^0.5.1"
 	}
 }

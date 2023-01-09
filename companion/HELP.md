@@ -14,5 +14,3 @@ Broadcasts Wake-on-LAN magic packet from all network interfaces.
 - AA-BB-CC-DD-EE-FF
 - AA.BB.CC.DD.EE.FF
 - AABBCCDDEEFF
-
-https://github.com/bitfocus/companion-module-generic-wakeonlan
